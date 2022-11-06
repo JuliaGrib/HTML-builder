@@ -11,7 +11,6 @@ fs.readdir(__dirname, (err, data) => {
             data.forEach(file => {
                 fs.copyFile((path.join(__dirname, 'files', file)), (path.join(__dirname, 'files-copy', file)), err => {
                     if(err) throw err; // не удалось скопировать файл
-                    console.log('Файл успешно скопирован');
                  });
             })
         })
