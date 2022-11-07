@@ -1,34 +1,21 @@
+const fs = require('fs/promises');
 const path = require('path');
-let fs = require('fs');
 
-fs.readdir(__dirname, (err, data) => {
-    let hasCopy = data.includes('files-copy'); 
-    if(!hasCopy){
-        fs.mkdir(path.join(__dirname, 'files-copy'), err => {
-            if (err) throw err;
-        });
-        fs.readdir(path.join(__dirname, 'files'), (err, data) => {
-            data.forEach(file => {
-                fs.copyFile((path.join(__dirname, 'files', file)), (path.join(__dirname, 'files-copy', file)), err => {
-                    if(err) throw err; // не удалось скопировать файл
-                 });
-            })
-        })
 
-    } else if (hasCopy) {
-        fs.rmSync((path.join(__dirname, 'files-copy')), { recursive:true }, err => {
-            if(err) throw err; // не удалось удалить папку
-        });
-        fs.mkdirSync(path.join(__dirname, 'files-copy'), err => {
-            if (err) throw err;
-        });
-        fs.readdir(path.join(__dirname, 'files'), (err, data) => {
-            data.forEach(file => {
-                fs.copyFile((path.join(__dirname, 'files', file)), (path.join(__dirname, 'files-copy', file)), err => {
-                    if(err) throw err; // не удалось скопировать файл
-                    console.log('Файл успешно скопирован');
-                 });
-            })
-        })
+
+async function go(){
+    await fs.rm((path.join(__dirname, 'files-copy')), { recursive:true, force: true}, err => {
+        if(err) throw err;
+    });
+
+    await fs.mkdir(path.join(__dirname, 'files-copy'),{ recursive: true }, err => {
+        if (err) throw err;
+    });
+
+    const arrFiles = await fs.readdir(path.join(__dirname, 'files'));
+    
+    for(let file of arrFiles){
+        await fs.copyFile((path.join(__dirname, 'files', file)), (path.join(__dirname, 'files-copy', file)));
     }
-})
+}
+go();
