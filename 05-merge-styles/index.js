@@ -18,4 +18,5 @@ async function makeBundle(styles, bundle) {
             copyCSS.pipe(fs.createWriteStream(bundle, {flags: 'a'}));
         });
     }
+    
 makeBundle(styles, bundle);
